@@ -10,14 +10,18 @@ const OnboardingSecond = () => {
   return (
     <div className='screen'>
         <div className="screenContent">
-            <div className="skip"><span>Skip</span></div>
+            <div className="skip"
+            onClick={()=> navigate('/onboarding3')}
+            ><span>Skip</span></div>
         <div className="content">
             <div className="image"><img src={ReadHubImages.SecondOnboardingImage} alt="ReadHub" /></div>
             <div className="texts">
                 <span className="title">Read with intention</span>
                 <span className="subtitle">Don't just read more. Read what truly matters <br /> to you</span>
             </div>
-            <div className="button">
+            <div className="button"
+            onClick={()=> navigate('/onboarding3')}
+            >
                 <span>Next</span>
             </div>
         </div>

@@ -16,7 +16,9 @@ const OnboardingFourth = () => {
                     <span className="title">Turn reading into growth</span>
                     <span className="subtitle">Build a personal knowledge library that grows <br /> with you</span>
                 </div>
-                <div className="button">
+                <div className="button"
+                onClick={()=> navigate('/signup')}
+                >
                     <span>Next</span>
                 </div>
             </div>
