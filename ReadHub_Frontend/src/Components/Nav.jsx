@@ -8,7 +8,7 @@ const Nav = () => {
     <div>
       <nav className="flex justify-between px-[17px] py-[10px]  text-[12px] fixed w-full bottom-0 bg-white ">
         <NavLink
-          to={"/"}
+          to={"/home"}
           className={({ isActive }) =>
             isActive
               ? "bg-primary/50 rounded-[10px] py-2 w-[53px] text-primary stroke-primary flex justify-center transition-colors duration-300"
