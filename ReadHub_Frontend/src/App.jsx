@@ -19,6 +19,7 @@ import Login from "./Pages/Auth/Login";
 import ForgotPassword from "./Pages/Auth/ForgotPassword";
 import Otp from "./Pages/Auth/Otp";
 import NewPassword from "./Pages/Auth/NewPassword";
+import Pricing from "./Pages/Pricing/Pricing";
 
 function App() {
   const location = useLocation();
@@ -38,6 +39,7 @@ function App() {
         <Route path="/notes" element={<Notes />} />
         <Route path="/explore" element={<Explore />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/pricing" element={<Pricing />} />
 
         <Route path="/" element={<OnboardingFirst />} />
         <Route path="/onboarding1" element={<OnboardingFirst />} />
