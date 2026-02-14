@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import "../Auth/Signup.css";
 import { useNavigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
+import { toast } from "react-toastify";
+import { LuLoaderCircle } from "react-icons/lu";
+
 import { validateEmail } from "./validate";
 import { ReadHubImages } from "../../assets/asset";
 import axiosConfig from "../../Util/axiosConfig";
 import { apiEndpoints } from "../../Util/apiEndpoints";
-import { toast } from "react-toastify";
-import { LuLoaderCircle } from "react-icons/lu";
+import "../Auth/Signup.css";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -21,7 +23,7 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // basic validation
     if (!name.trim()) {
       setError("Please enter your full name");
@@ -47,17 +49,50 @@ const Signup = () => {
       const response = await axiosConfig.post(apiEndpoints.REGISTER, {
         username: name,
         email,
-        password
+        password,
       });
       if (response.status === 201 || response.status === 200) {
         toast.success("Profile created successfully.");
         navigate("/login");
       }
     } catch (err) {
-      setError(err.response?.data?.message || "An error occurred during registration.");
+      setError(
+        err.response?.data?.message || "An error occurred during registration."
+      );
     } finally {
       setLoading(false);
     }
+  };
+
+
+  
+  const handleGoogleSuccess = async (credentialResponse) => {
+    const idToken = credentialResponse.credential;
+    setLoading(true);
+    try {
+      const response = await axiosConfig.post(apiEndpoints.GOOGLE_AUTH, {
+        idToken,
+      });
+      if (response.status === 200) {
+        toast.success("Logged in successfully.");
+        localStorage.setItem("accessToken", response.data.accessToken);
+        navigate("/");
+      }
+    } catch (err) {
+      setError(
+        err.response?.data?.message || "An error occurred during Google login."
+      );
+      toast.error(
+        err.response?.data?.message || "An error occurred during Google login."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    setError("Google login failed. Please try again.");
+    toast.error("Google login failed. Please try again.");
   };
 
   return (
@@ -138,15 +173,21 @@ const Signup = () => {
                 </p>
               )}
 
-              <button disabled={loading} className={`btn-primary w-full py-3 text-lg font-medium flex items-center justify-center gap-2 ${loading ? 'opacity-60 cursor-not-allowed' : ''}`} type='submit'>
-                        {loading ? (
-                            <>
-                            <LuLoaderCircle className="animate-spin w-5 h-5" />
-                            Creating...
-                            </>
-                        ): (
-                            "Create Account"
-                        )}
+              <button
+                disabled={loading}
+                className={`btn-primary w-full py-3 text-lg font-medium flex items-center justify-center gap-2 ${
+                  loading ? "opacity-60 cursor-not-allowed" : ""
+                }`}
+                type="submit"
+              >
+                {loading ? (
+                  <>
+                    <LuLoaderCircle className="animate-spin w-5 h-5" />
+                    Creating...
+                  </>
+                ) : (
+                  "Create Account"
+                )}
               </button>
 
               <div className="separator">
@@ -156,13 +197,10 @@ const Signup = () => {
               </div>
 
               <div className="icons">
-                <span>
-                  <img
-                    className="googleImg"
-                    src={ReadHubImages.GoogleIcon}
-                    alt="Google login"
-                  />
-                </span>
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={handleGoogleError}
+                />
                 <span>
                   <img
                     className="googleImg"

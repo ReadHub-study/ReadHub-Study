@@ -5,4 +5,5 @@ export const apiEndpoints = {
     REGISTER: "auth/register",
     REFRESH_TOKEN: "auth/refresh",
     LOGOUT: "auth/logout",
+    GOOGLE_AUTH: "auth/google",
 }

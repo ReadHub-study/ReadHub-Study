@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
+import { toast } from "react-toastify";
 import { validateEmail } from "./validate";
 import { ReadHubImages } from "../../assets/asset";
 import axiosConfig from "../../Util/axiosConfig";
@@ -55,6 +57,35 @@ const Login = () => {
         setError("An unexpected error occurred.");
       }
     }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    const idToken = credentialResponse.credential;
+    setLoading(true);
+    try {
+      const response = await axiosConfig.post(apiEndpoints.GOOGLE_AUTH, {
+        idToken,
+      });
+      if (response.status === 200) {
+        toast.success("Logged in successfully.");
+        localStorage.setItem("accessToken", response.data.accessToken);
+        navigate("/");
+      }
+    } catch (err) {
+      setError(
+        err.response?.data?.message || "An error occurred during Google login."
+      );
+      toast.error(
+        err.response?.data?.message || "An error occurred during Google login."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    setError("Google login failed. Please try again.");
+    toast.error("Google login failed. Please try again.");
   };
 
   return (
@@ -138,13 +169,10 @@ const Login = () => {
               </div>
 
               <div className="icons">
-                <span>
-                  <img
-                    className="googleImg"
-                    src={ReadHubImages.GoogleIcon}
-                    alt="Google login"
-                  />
-                </span>
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={handleGoogleError}
+                />
                 <span>
                   <img
                     className="googleImg"
