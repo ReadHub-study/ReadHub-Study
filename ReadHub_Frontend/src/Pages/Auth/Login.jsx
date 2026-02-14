@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { validateEmail } from "./validate";
 import { ReadHubImages } from "../../assets/asset";
+import axiosConfig from "../../Util/axiosConfig";
+import { apiEndpoints } from "../../Util/apiEndpoints";
+import { LuLoaderCircle } from "react-icons/lu";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -12,27 +15,46 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-
-    // call SignIn API
-
-    // end SignIn API
-
-    // basic validation
+    
+    // Basic validation
     if (!validateEmail(email)) {
-      setError("Please enter your email address");
-      setLoading(false);
+      setError("Please enter a valid email address");
       return;
     }
     if (!password.trim()) {
       setError("Please enter your password");
-      setLoading(false);
       return;
     }
+    
     setError("");
-    navigate("/home");
+    setLoading(true);
+
+    try {
+      const response = await axiosConfig.post(apiEndpoints.LOGIN, {
+        email,
+        password,
+      });
+
+      const { accessToken, refreshToken } = response.data;
+
+      // Store tokens in localStorage
+      localStorage.setItem("token", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+
+      setLoading(false);
+      navigate("/home");
+    } catch (err) {
+      setLoading(false);
+      if (err.response) {
+        setError(err.response.data.message || "Authentication failed. Please check your credentials.");
+      } else if (err.request) {
+        setError("Network error. Please try again later.");
+      } else {
+        setError("An unexpected error occurred.");
+      }
+    }
   };
 
   return (
@@ -85,20 +107,29 @@ const Login = () => {
                 <p
                   className="errorText"
                   style={{
-                    color: red,
-                    alignItems: center,
-                    backgroundColor: none,
+                    color: "red",
+                    alignItems: "center",
+                    backgroundColor: "none",
                   }}
                 >
                   {error}
                 </p>
               )}
 
-              <button type="submit" className="submitButton">
-                <span style={{ padding: ".8rem 8.9rem", fontSize: "1rem" }}>
-                  Sign In
-                </span>
-              </button>
+              <button
+            disabled={loading}
+              className={`btn-primary w-full py-3 text-lg font-medium flex items-center justify-center gap-2 ${loading ? 'opacity-60 cursor-not-allowed': ''}`}
+              type="submit"
+            >
+              {loading ? (
+                <>
+                <LuLoaderCircle className="animate-spin w-4 h-4"/>
+                Signing In...
+                </>
+              ): (
+                "Sign In"
+              )}
+            </button>
 
               <div className="separator">
                 <hr className="short-line" />
