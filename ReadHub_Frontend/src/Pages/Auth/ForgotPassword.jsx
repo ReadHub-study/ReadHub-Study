@@ -26,6 +26,8 @@ const ForgotPassword = () => {
 
     try {
         await axiosConfig.post(apiEndpoints.FORGOT_PASSWORD, { email });
+        // Store email in sessionStorage for the password reset flow
+        sessionStorage.setItem("resetEmail", email);
         setLoading(false);
         navigate("/otp");
     } catch (err) {

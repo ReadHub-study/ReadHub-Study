@@ -48,6 +48,8 @@ const Otp = () => {
     setLoading(true);
     try {
       await axiosConfig.post(apiEndpoints.PASSWORD_TOKEN_VERIFICATION, { code });
+      // Store the code in sessionStorage for use in NewPassword.jsx
+      sessionStorage.setItem('resetCode', code);
       setLoading(false);
       toast.success("OTP verified successfully!");
       navigate("/newpassword");

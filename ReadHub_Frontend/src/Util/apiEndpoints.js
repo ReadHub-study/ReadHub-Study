@@ -8,4 +8,5 @@ export const apiEndpoints = {
     GOOGLE_AUTH: "auth/google",
     FORGOT_PASSWORD: "auth/forget-password",
     PASSWORD_TOKEN_VERIFICATION: "auth/password-token-verification",
+    RESET_PASSWORD: "auth/reset-password",
 }
