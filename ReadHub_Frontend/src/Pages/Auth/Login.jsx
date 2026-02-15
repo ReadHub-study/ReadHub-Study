@@ -11,7 +11,6 @@ import { LuLoaderCircle } from "react-icons/lu";
 const Login = () => {
   const navigate = useNavigate();
 
-  const [isCreateAccount, setIsCreateAccount] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);

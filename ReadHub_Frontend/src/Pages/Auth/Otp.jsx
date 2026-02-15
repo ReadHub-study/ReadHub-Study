@@ -1,5 +1,9 @@
 import React, { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import axiosConfig from '../../Util/axiosConfig';
+import { apiEndpoints } from '../../Util/apiEndpoints';
 
 const Otp = () => {
 
@@ -7,8 +11,6 @@ const Otp = () => {
 
   const inputRef = useRef([]);
   const [loading, setLoading] = useState(false);
-  const [otp, setOtp] = useState("");
-  const [isOtpSubmitted, setIsOtpSubmitted] = useState(false);
 
   const handleChange = (e, index) => {
     const value = e.target.value.replace(/\D/, "");
@@ -36,37 +38,45 @@ const Otp = () => {
     inputRef.current[next].focus();
   }
 
-  const handleVerify = () => {
-    const otp = inputRef.current.map((input) => input.value).join("");
-    if(otp.length !== 6){
+  const handleVerify = async () => {
+    const code = inputRef.current.map((input) => input.value).join("");
+    if(code.length !== 6){
       toast.error("Please enter all 6 digits of the otp");
       return;
     }
 
-    setOtp(otp);
-    setIsOtpSubmitted(true);
+    setLoading(true);
+    try {
+      await axiosConfig.post(apiEndpoints.PASSWORD_TOKEN_VERIFICATION, { code });
+      setLoading(false);
+      toast.success("OTP verified successfully!");
+      navigate("/newpassword");
+    } catch (error) {
+      setLoading(false);
+      toast.error("Invalid or expired OTP. Please try again.");
+    }
   }
 
   return (
     <>
-
+    <ToastContainer />
     <div style={{ height: "100vh", backgroundColor: "linear-gradient(90deg, #6a5af9, #8268f9", border: "none", display: "flex", flexDirection: "column", justifyContent: "start", alignItems: "center", paddingTop: "8rem"}}
     >
     {/*otp cards  */}
-      {!isOtpSubmitted && (
+      
         <div style={{width: "400px"}}>
         <h4 className='text-center' style={{color: "#4d4d4d", fontWeight: "500", fontSize: "1.5rem"}}>OTP Verification Code</h4>
         <p className="text-center" style={{marginBottom: "2rem"}}>
           Enter the 6-digit code sent to your email
         </p>
 
-        <div style={{display: "flex", justifyContent: "between", gap: "1rem", marginBottom: "4rem", color: "white", alignItems: "center", padding: "1rem"}}>
+        <div style={{display: "flex", justifyContent: "space-between", gap: "1rem", marginBottom: "4rem", color: "white", alignItems: "center", padding: "1rem"}}>
           {[...Array(6)].map((_, i) => (
             <input
             key={i}
             type='text'
             maxLength={1}
-            className='form-control text-center fs-4 otp-input'
+            className='form-control text-center fs-4 otp-input text-black'
             ref={(el) => (inputRef.current[i] = el)}
             onChange={(e) => handleChange(e, i)}
             onKeyDown={(e) => handleKeyDown(e, i)}
@@ -85,7 +95,7 @@ const Otp = () => {
           </button>
 
       </div>
-      )}
+      
       </div>
     </>
   )
