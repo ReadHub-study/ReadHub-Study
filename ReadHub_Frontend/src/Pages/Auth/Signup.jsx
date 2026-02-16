@@ -65,7 +65,7 @@ const Signup = () => {
   };
 
 
-  
+
   const handleGoogleSuccess = async (credentialResponse) => {
     const idToken = credentialResponse.credential;
     setLoading(true);
@@ -175,7 +175,7 @@ const Signup = () => {
 
               <button
                 disabled={loading}
-                className={`btn-primary w-full py-3 text-lg font-medium flex items-center justify-center gap-2 ${
+                className={`btn-primary bg-blue-400 rounded-lg w-full py-3 text-white text-lg font-medium flex items-center justify-center gap-2 submitButton ${
                   loading ? "opacity-60 cursor-not-allowed" : ""
                 }`}
                 type="submit"

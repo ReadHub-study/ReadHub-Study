@@ -148,7 +148,7 @@ const Login = () => {
 
               <button
             disabled={loading}
-              className={`btn-primary w-full py-3 text-lg font-medium flex items-center justify-center gap-2 ${loading ? 'opacity-60 cursor-not-allowed': ''}`}
+              className={`btn-primary bg-blue-400 rounded-lg text-white w-full py-3 text-lg font-medium flex items-center justify-center gap-2 ${loading ? 'opacity-60 cursor-not-allowed': ''}`}
               type="submit"
             >
               {loading ? (

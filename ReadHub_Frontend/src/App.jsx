@@ -7,7 +7,6 @@ import Home from "./Pages/Home";
 import Library from "./Pages/Library";
 import Notes from "./Pages/Notes";
 import Explore from "./Pages/Explore";
-import Profile from "./Pages/Profile";
 import TimerControler from "./Components/TimerControler";
 
 import OnboardingFirst from "./Pages/Onboarding/OnboardingFirst";
@@ -20,6 +19,7 @@ import ForgotPassword from "./Pages/Auth/ForgotPassword";
 import Otp from "./Pages/Auth/Otp";
 import NewPassword from "./Pages/Auth/NewPassword";
 import Pricing from "./Pages/Pricing/Pricing";
+import Profile from "./Pages/Profile/Profile";
 
 function App() {
   const location = useLocation();
