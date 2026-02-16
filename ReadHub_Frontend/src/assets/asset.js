@@ -8,6 +8,21 @@ import backIcon from "../assets/backIcon.png"
 import pricingIcon from "../assets/pricingIcon.png"
 import pricingCardBg from "../assets/pricingCardBg.jpg"
 import pricingStarIcon from "../assets/starIcon.png"
+import crown from "../assets/crown.png"
+import ProfileImage from "../assets/ProfileImage.png"
+import EditIcon from "../assets/EditIcon.png"
+import switchIcon from "../assets/switch.png"
+import lightIcon from "../assets/light.png"
+import bookIcon from "../assets/book.png"
+import timeIcon from "../assets/time.png"
+import fireIcon from "../assets/fire.png"
+import highlightIcon from "../assets/highlight.png"
+import circlesIcon from "../assets/circles.png"
+import ForwardArrow from "../assets/arrowForward.png"
+import cloudIcon from "../assets/cloud.png"
+import statisticsIcon from "../assets/statistics.png"
+import settingsIcon from "../assets/settings.png"
+import signoutIcon from "../assets/signout.png"
 
 export const ReadHubImages = {
     FirstOnboardingImageIcon,
@@ -19,5 +34,20 @@ export const ReadHubImages = {
     backIcon,
     pricingIcon,
     pricingCardBg,
-    pricingStarIcon
+    pricingStarIcon,
+    crown,
+    ProfileImage,
+    EditIcon,
+    switchIcon,
+    lightIcon,
+    bookIcon,
+    timeIcon,
+    fireIcon,
+    highlightIcon,
+    circlesIcon,
+    ForwardArrow,
+    cloudIcon,
+    statisticsIcon,
+    settingsIcon,
+    signoutIcon,
 }
