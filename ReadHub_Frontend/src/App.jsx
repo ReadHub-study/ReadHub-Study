@@ -10,6 +10,8 @@ import Explore from "./Pages/Explore";
 import Profile from "./Pages/Profile";
 import TimerControler from "./Components/TimerControler";
 
+import ViewPdf from "./Features/ViewPdf";
+
 import OnboardingFirst from "./Pages/Onboarding/OnboardingFirst";
 import OnboardingSecond from "./Pages/Onboarding/OnboardingSecond";
 import OnboardingThird from "./Pages/Onboarding/OnboardingThird";
@@ -38,6 +40,8 @@ function App() {
         <Route path="/notes" element={<Notes />} />
         <Route path="/explore" element={<Explore />} />
         <Route path="/profile" element={<Profile />} />
+
+        <Route path="/viewpdf/:fileId" element={<ViewPdf />} />
 
         <Route path="/" element={<OnboardingFirst />} />
         <Route path="/onboarding1" element={<OnboardingFirst />} />
