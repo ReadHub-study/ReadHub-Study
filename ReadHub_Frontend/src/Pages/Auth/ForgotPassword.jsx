@@ -1,39 +1,39 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { validateEmail } from './validate';
+import axiosConfig from '../../Util/axiosConfig';
+import { apiEndpoints } from '../../Util/apiEndpoints';
 
 const ForgotPassword = () => {
 
     const navigate = useNavigate();
 
-  const [resetPassword, setResetPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
 
-   const handleSubmit = (e) => {
-
+   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    // call resetpassword API
+    if (!validateEmail(email)) {
+        setError("Please enter a valid email address");
+        setLoading(false);
+        return;
+    }
+    setError("");
 
-    // end resetpassword API
-
-    // basic validation
-        if(!validateEmail(email)){
-            setError("Please enter your email address");
-            setLoading(false);
-            return;
-        }
-        if(!password.trim()){
-            setError("Please enter your password");
-            setLoading(false);
-            return;
-        }
-        setError("");
-
+    try {
+        await axiosConfig.post(apiEndpoints.FORGOT_PASSWORD, { email });
+        // Store email in sessionStorage for the password reset flow
+        sessionStorage.setItem("resetEmail", email);
+        setLoading(false);
+        navigate("/otp");
+    } catch (err) {
+        setLoading(false);
+        setError("Failed to send OTP. Please try again.");
+    }
    }
 
 
@@ -47,12 +47,12 @@ const ForgotPassword = () => {
         </div>
 
 
-          <form action={handleSubmit} className='signupForm'>
+          <form onSubmit={handleSubmit} className='signupForm'>
 
             <div className="inputFields">
 
             <div className='field'>
-              <label htmlFor="">Email</label>
+              <label htmlFor="email">Email</label>
               <input type="text" 
               id='email'
               className='form-control'
@@ -63,19 +63,15 @@ const ForgotPassword = () => {
               />
               </div>
 
-            {/* <div style={{justifyContent: "end", marginLeft: "12rem"}}>
-                <span style={{color: "#2d7ff9"}} onClick={()=>navigate("/forgotpassword")}>Forgot Password?</span>
-            </div> */}
-
             {error && (
-                        <p className="errorText" style={{color: red, alignItems: center, backgroundColor: none}}>
+                        <p className="errorText" style={{color: "red", alignItems: "center"}}>
                             {error}
                         </p>
             )}
 
-            <div onClick={()=>navigate("/otp")} className="submitButton">
-              <span style={{padding: ".8rem 7.5rem", fontSize: "1rem"}}>Request OTP</span>
-            </div>
+            <button type="submit" className="submitButton" disabled={loading}>
+              <span style={{padding: ".8rem 7.5rem", fontSize: "1rem"}}>{loading ? "Sending..." : "Request OTP"}</span>
+            </button>
 
         </div>
           </form>

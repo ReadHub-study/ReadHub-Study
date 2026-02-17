@@ -7,7 +7,6 @@ import Home from "./Pages/Home";
 import Library from "./Pages/Library";
 import Notes from "./Pages/Notes";
 import Explore from "./Pages/Explore";
-import Profile from "./Pages/Profile";
 import TimerControler from "./Components/TimerControler";
 
 import ViewPdf from "./Features/ViewPdf";
@@ -21,6 +20,8 @@ import Login from "./Pages/Auth/Login";
 import ForgotPassword from "./Pages/Auth/ForgotPassword";
 import Otp from "./Pages/Auth/Otp";
 import NewPassword from "./Pages/Auth/NewPassword";
+import Pricing from "./Pages/Pricing/Pricing";
+import Profile from "./Pages/Profile/Profile";
 
 function App() {
   const location = useLocation();
@@ -40,6 +41,7 @@ function App() {
         <Route path="/notes" element={<Notes />} />
         <Route path="/explore" element={<Explore />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/pricing" element={<Pricing />} />
 
         <Route path="/viewpdf/:fileId" element={<ViewPdf />} />
 

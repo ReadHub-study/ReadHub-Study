@@ -4,6 +4,10 @@ import ThirdOnboardingImage from "../assets/ThirdImg.png"
 import FourthOnboardingImage from "../assets/FourthImg.png"
 import GoogleIcon from "../assets/google.png"
 import AppleIcon from "../assets/apple.png"
+import backIcon from "../assets/backIcon.png"
+import pricingIcon from "../assets/pricingIcon.png"
+import pricingCardBg from "../assets/pricingCardBg.jpg"
+import pricingStarIcon from "../assets/starIcon.png"
 
 export const ReadHubImages = {
     FirstOnboardingImageIcon,
@@ -11,5 +15,9 @@ export const ReadHubImages = {
     ThirdOnboardingImage,
     FourthOnboardingImage,
     GoogleIcon,
-    AppleIcon
+    AppleIcon,
+    backIcon,
+    pricingIcon,
+    pricingCardBg,
+    pricingStarIcon
 }

@@ -11,7 +11,7 @@ const OnboardingFourth = () => {
     <div className='screen'>
             <div className="screenContent">
             <div className="content">
-                <div className="image"><img src={ReadHubImages.SecondOnboardingImage} alt="ReadHub" /></div>
+                <div className="image"><img src={ReadHubImages.FourthOnboardingImage} alt="ReadHub" /></div>
                 <div className="texts">
                     <span className="title">Turn reading into growth</span>
                     <span className="subtitle">Build a personal knowledge library that grows <br /> with you</span>

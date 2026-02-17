@@ -1,8 +1,14 @@
 import React, { useState } from "react";
-import "../Auth/Signup.css";
 import { useNavigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
+import { toast } from "react-toastify";
+import { LuLoaderCircle } from "react-icons/lu";
+
 import { validateEmail } from "./validate";
 import { ReadHubImages } from "../../assets/asset";
+import axiosConfig from "../../Util/axiosConfig";
+import { apiEndpoints } from "../../Util/apiEndpoints";
+import "../Auth/Signup.css";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -15,32 +21,78 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-
-    // call signup API
-
-    // end signup API
 
     // basic validation
     if (!name.trim()) {
       setError("Please enter your full name");
-      setLoading(false);
       return;
     }
     if (!validateEmail(email)) {
       setError("Please enter your email address");
-      setLoading(false);
       return;
     }
     if (!password.trim()) {
       setError("Please enter your password");
-      setLoading(false);
       return;
     }
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
     setError("");
-    navigate("/home");
+    setLoading(true);
+
+    try {
+      const response = await axiosConfig.post(apiEndpoints.REGISTER, {
+        username: name,
+        email,
+        password,
+      });
+      if (response.status === 201 || response.status === 200) {
+        toast.success("Profile created successfully.");
+        navigate("/login");
+      }
+    } catch (err) {
+      setError(
+        err.response?.data?.message || "An error occurred during registration."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    const idToken = credentialResponse.credential;
+    setLoading(true);
+    try {
+      const response = await axiosConfig.post(apiEndpoints.GOOGLE_AUTH, {
+        idToken,
+      });
+      if (response.status === 200) {
+        toast.success("Logged in successfully.");
+        localStorage.setItem("accessToken", response.data.accessToken);
+        navigate("/");
+      }
+    } catch (err) {
+      setError(
+        err.response?.data?.message || "An error occurred during Google login."
+      );
+      toast.error(
+        err.response?.data?.message || "An error occurred during Google login."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    setError("Google login failed. Please try again.");
+    toast.error("Google login failed. Please try again.");
   };
 
   return (
@@ -121,8 +173,21 @@ const Signup = () => {
                 </p>
               )}
 
-              <button type="submit" className="submitButton">
-                <span>Create Account</span>
+              <button
+                disabled={loading}
+                className={`btn-primary bg-blue-400 rounded-lg w-full py-3 text-white text-lg font-medium flex items-center justify-center gap-2 submitButton ${
+                  loading ? "opacity-60 cursor-not-allowed" : ""
+                }`}
+                type="submit"
+              >
+                {loading ? (
+                  <>
+                    <LuLoaderCircle className="animate-spin w-5 h-5" />
+                    Creating...
+                  </>
+                ) : (
+                  "Create Account"
+                )}
               </button>
 
               <div className="separator">
@@ -132,13 +197,10 @@ const Signup = () => {
               </div>
 
               <div className="icons">
-                <span>
-                  <img
-                    className="googleImg"
-                    src={ReadHubImages.GoogleIcon}
-                    alt="Google login"
-                  />
-                </span>
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={handleGoogleError}
+                />
                 <span>
                   <img
                     className="googleImg"

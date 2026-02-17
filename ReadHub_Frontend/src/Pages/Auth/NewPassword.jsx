@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { validateEmail } from './validate';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import axiosConfig from '../../Util/axiosConfig';
+import { apiEndpoints } from '../../Util/apiEndpoints';
 
 const NewPassword = () => {
 
@@ -13,22 +16,61 @@ const NewPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
 
 
-   const handleSubmit = (e) => {
+   const handleSubmit = async (e) => {
 
     e.preventDefault();
     setLoading(true);
+    setError("");
 
-    // call createnewpassword API
+    // Basic validation
+    if(!password.trim()){
+        setError("Please enter your password");
+        setLoading(false);
+        return;
+    }
 
-    // end createnewpassword API
+    if(password.length < 6){
+        setError("Password must be at least 6 characters");
+        setLoading(false);
+        return;
+    }
 
-    // basic validation
-        if(!password.trim()){
-            setError("Please enter your password");
-            setLoading(false);
-            return;
-        }
-        setError("");
+    if(password !== confirmPassword){
+        setError("Passwords do not match");
+        setLoading(false);
+        return;
+    }
+
+    // Get the code from sessionStorage
+    const code = sessionStorage.getItem('resetCode');
+    
+    if(!code){
+        setError("Session expired. Please request a new OTP.");
+        setLoading(false);
+        return;
+    }
+
+    try {
+      // Call reset-password API
+      await axiosConfig.patch(apiEndpoints.RESET_PASSWORD, {
+        code: code,
+        password: password
+      });
+      
+      setLoading(false);
+      toast.success("Password reset successfully!");
+      
+      // Clear the sessionStorage
+      sessionStorage.removeItem('resetCode');
+      
+      // Navigate to login page
+      navigate("/login");
+    } catch (err) {
+      setLoading(false);
+      const message = err.response?.data?.message || "Failed to reset password. Please try again.";
+      setError(message);
+      toast.error(message);
+    }
 
    }
 

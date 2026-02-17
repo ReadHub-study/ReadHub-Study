@@ -1,38 +1,90 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
+import { toast } from "react-toastify";
 import { validateEmail } from "./validate";
 import { ReadHubImages } from "../../assets/asset";
+import axiosConfig from "../../Util/axiosConfig";
+import { apiEndpoints } from "../../Util/apiEndpoints";
+import { LuLoaderCircle } from "react-icons/lu";
 
 const Login = () => {
   const navigate = useNavigate();
 
-  const [isCreateAccount, setIsCreateAccount] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-
-    // call SignIn API
-
-    // end SignIn API
-
-    // basic validation
+    
+    // Basic validation
     if (!validateEmail(email)) {
-      setError("Please enter your email address");
-      setLoading(false);
+      setError("Please enter a valid email address");
       return;
     }
     if (!password.trim()) {
       setError("Please enter your password");
-      setLoading(false);
       return;
     }
+    
     setError("");
-    navigate("/home");
+    setLoading(true);
+
+    try {
+      const response = await axiosConfig.post(apiEndpoints.LOGIN, {
+        email,
+        password,
+      });
+
+      const { accessToken, refreshToken } = response.data;
+
+      // Store tokens in localStorage
+      localStorage.setItem("token", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+
+      setLoading(false);
+      navigate("/home");
+    } catch (err) {
+      setLoading(false);
+      if (err.response) {
+        setError(err.response.data.message || "Authentication failed. Please check your credentials.");
+      } else if (err.request) {
+        setError("Network error. Please try again later.");
+      } else {
+        setError("An unexpected error occurred.");
+      }
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    const idToken = credentialResponse.credential;
+    setLoading(true);
+    try {
+      const response = await axiosConfig.post(apiEndpoints.GOOGLE_AUTH, {
+        idToken,
+      });
+      if (response.status === 200) {
+        toast.success("Logged in successfully.");
+        localStorage.setItem("accessToken", response.data.accessToken);
+        navigate("/");
+      }
+    } catch (err) {
+      setError(
+        err.response?.data?.message || "An error occurred during Google login."
+      );
+      toast.error(
+        err.response?.data?.message || "An error occurred during Google login."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    setError("Google login failed. Please try again.");
+    toast.error("Google login failed. Please try again.");
   };
 
   return (
@@ -85,20 +137,29 @@ const Login = () => {
                 <p
                   className="errorText"
                   style={{
-                    color: red,
-                    alignItems: center,
-                    backgroundColor: none,
+                    color: "red",
+                    alignItems: "center",
+                    backgroundColor: "none",
                   }}
                 >
                   {error}
                 </p>
               )}
 
-              <button type="submit" className="submitButton">
-                <span style={{ padding: ".8rem 8.9rem", fontSize: "1rem" }}>
-                  Sign In
-                </span>
-              </button>
+              <button
+            disabled={loading}
+              className={`btn-primary bg-blue-400 rounded-lg text-white w-full py-3 text-lg font-medium flex items-center justify-center gap-2 ${loading ? 'opacity-60 cursor-not-allowed': ''}`}
+              type="submit"
+            >
+              {loading ? (
+                <>
+                <LuLoaderCircle className="animate-spin w-4 h-4"/>
+                Signing In...
+                </>
+              ): (
+                "Sign In"
+              )}
+            </button>
 
               <div className="separator">
                 <hr className="short-line" />
@@ -107,13 +168,10 @@ const Login = () => {
               </div>
 
               <div className="icons">
-                <span>
-                  <img
-                    className="googleImg"
-                    src={ReadHubImages.GoogleIcon}
-                    alt="Google login"
-                  />
-                </span>
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={handleGoogleError}
+                />
                 <span>
                   <img
                     className="googleImg"
