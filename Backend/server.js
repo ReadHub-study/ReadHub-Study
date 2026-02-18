@@ -26,6 +26,7 @@ app.use(
 app.use(bodyParser.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
+app.use(morgan('dev'))
 
 // Test route
 app.get('/', (req, res) => {
