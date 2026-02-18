@@ -84,7 +84,7 @@ input[type="password"]{
     align-items: center;
     flex-direction: row;
     gap: .5rem;
-    margin-top: 2rem;
+    margin-top: 1rem;
 }
 
 .separator span{
