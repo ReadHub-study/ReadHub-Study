@@ -53,14 +53,3 @@
 .button{
     margin-top: 4rem;
 }
-
-.button span{
-    color: #ffffff;
-    background-color: #2D7FF9;
-    font-size: 1rem;
-    box-sizing: border-box;
-    border: none;
-    padding: .8rem 8rem;
-    border-radius: 5px;
-
-}

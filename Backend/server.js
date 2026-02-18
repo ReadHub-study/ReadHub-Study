@@ -15,17 +15,18 @@ dotenv.config()
 const app = express()
 
 // Middleware
-app.use(cors())
-app.use(morgan('dev'))
+const allowedOrigin = process.env.FRONTEND_URL
+
 app.use(
   cors({
-    origin: 'http://localhost:3000', // frontend URL
+    origin: allowedOrigin,
     credentials: true,
-  }),
-)
+  })
+);
 app.use(bodyParser.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
+app.use(morgan('dev'))
 
 // Test route
 app.get('/', (req, res) => {
