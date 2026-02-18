@@ -9,10 +9,12 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FileProvider } from "./Context/FileContext.jsx";
 
+const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <FileProvider>
-      <GoogleOAuthProvider clientId="GOOGLE_CLIENT_ID.apps.googleusercontent.com">
+      <GoogleOAuthProvider clientId={clientId}>
         <ToastContainer />
         <BrowserRouter>
           <App />
