@@ -19,7 +19,7 @@ app.use(cors())
 app.use(morgan('dev'))
 app.use(
   cors({
-    origin: proccess.env.FRONTEND_URL, // frontend URL
+    origin: process.env.FRONTEND_URL, // frontend URL
     credentials: true,
   }),
 )
