@@ -19,10 +19,10 @@ const OnboardingSecond = () => {
                 <span className="title">Read with intention</span>
                 <span className="subtitle">Don't just read more. Read what truly matters <br /> to you</span>
             </div>
-            <div className="button"
+            <div className="button w-full flex items-center justify-center mt-20"
             onClick={()=> navigate('/onboarding3')}
             >
-                <span>Next</span>
+                <span className='items-center bg-blue-400 text-white p-3 rounded-lg'>Next</span>
             </div>
         </div>
         </div>

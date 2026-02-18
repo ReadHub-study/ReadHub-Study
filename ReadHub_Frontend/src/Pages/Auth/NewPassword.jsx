@@ -4,12 +4,12 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axiosConfig from '../../Util/axiosConfig';
 import { apiEndpoints } from '../../Util/apiEndpoints';
+import { LuLoaderCircle } from 'react-icons/lu';
 
 const NewPassword = () => {
 
        const navigate = useNavigate();
 
-  const [createPassword, setCreatePassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [password, setPassword] = useState("");
@@ -84,7 +84,7 @@ const NewPassword = () => {
         </div>
 
 
-          <form action={handleSubmit} className='signupForm'>
+          <form onSubmit={handleSubmit} className='signupForm'>
 
             <div className="inputFields">
 
@@ -113,14 +113,27 @@ const NewPassword = () => {
             </div>
 
             {error && (
-                        <p className="errorText" style={{color: red, alignItems: center, backgroundColor: none}}>
+                        <p className="errorText" style={{color: "red", alignItems: "center", backgroundColor: "none"}}>
                             {error}
                         </p>
             )}
 
-            <div className="submitButton">
-              <span style={{padding: ".8rem 9rem", fontSize: "1rem"}}>Sign in</span>
-            </div>
+            <button
+                disabled={loading}
+                className={`btn-primary bg-blue-400 rounded-lg w-full py-3 text-white text-lg font-medium flex items-center justify-center gap-2 submitButton ${
+                  loading ? "opacity-60 cursor-not-allowed" : ""
+                }`}
+                type="submit"
+              >
+                {loading ? (
+                  <>
+                    <LuLoaderCircle className="animate-spin w-5 h-5" />
+                    Signing In...
+                  </>
+                ) : (
+                  "Sign In"
+                )}
+              </button>
 
         </div>
           </form>

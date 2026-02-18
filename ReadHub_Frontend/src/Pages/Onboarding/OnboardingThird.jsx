@@ -19,10 +19,10 @@ const OnboardingThird = () => {
                     <span className="title">Capture what matters</span>
                     <span className="subtitle">Save highlights, ideas, and thoughts you don't <br /> want to forget</span>
                 </div>
-                <div className="button"
+                <div className="button  w-full flex items-center justify-center mt-20"
                 onClick={()=> navigate('/onboarding4')}
                 >
-                    <span>Next</span>
+                    <span className='items-center bg-blue-400 text-white p-3 rounded-lg'>Next</span>
                 </div>
             </div>
             </div>
