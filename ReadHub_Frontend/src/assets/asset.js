@@ -19,10 +19,32 @@ import fireIcon from "../assets/fire.png"
 import highlightIcon from "../assets/highlight.png"
 import circlesIcon from "../assets/circles.png"
 import ForwardArrow from "../assets/arrowForward.png"
+import BackwardArrow from "../assets/arrowBackward.png"
 import cloudIcon from "../assets/cloud.png"
 import statisticsIcon from "../assets/statistics.png"
 import settingsIcon from "../assets/settings.png"
 import signoutIcon from "../assets/signout.png"
+import profileIcon from "../assets/profile.png"
+import notificationIcon from "../assets/notification.png"
+import vibrationIcon from "../assets/vibration.png"
+import soundIcon from "../assets/sound.png"
+import pushNotificationIcon from "../assets/pushNotification.png"
+import toggleOnIcon from "../assets/toggleOn.png"
+import deleteIcon from "../assets/delete.png"
+import exportIcon from "../assets/export.png"
+import privacyPolicyIcon from "../assets/privacy.png"
+import termsOfServiceIcon from "../assets/terms.png"
+import helpAndSupportIcon from "../assets/help.png"
+import calendarIcon from "../assets/calendar.png"
+import progressIcon from "../assets/progress.png"
+import achievementIcon from "../assets/achievement.png"
+import booksIcon from "../assets/books.png"
+import fireStreakIcon from "../assets/fireStreak.png"
+import starHighlightIcon from "../assets/starHighlight.png"
+import bookAchievementIcon from "../assets/bookAchievement.png"
+import streakTrophyIcon from "../assets/streakTrophy.png"
+import diamondIcon from "../assets/diamond.png"
+
 
 export const ReadHubImages = {
     FirstOnboardingImageIcon,
@@ -50,4 +72,25 @@ export const ReadHubImages = {
     statisticsIcon,
     settingsIcon,
     signoutIcon,
+    BackwardArrow,
+    profileIcon,
+    vibrationIcon,
+    soundIcon,
+    pushNotificationIcon,
+    notificationIcon,
+    toggleOnIcon,
+    deleteIcon,
+    exportIcon,
+    privacyPolicyIcon,
+    termsOfServiceIcon,
+    helpAndSupportIcon,
+    calendarIcon,
+    achievementIcon,
+    progressIcon,
+    booksIcon,
+    fireStreakIcon,
+    starHighlightIcon,
+    bookAchievementIcon,
+    streakTrophyIcon,
+    diamondIcon,
 }

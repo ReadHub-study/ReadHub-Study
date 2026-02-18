@@ -1,7 +1,11 @@
 import React from 'react'
 import { ReadHubImages } from '../../assets/asset'
+import { useNavigate } from 'react-router-dom'
 
 const Profile = () => {
+
+    const navigate = useNavigate();
+
   return (
     <>
     <div className='p-5 bg-gray-100 min-h-screen'>
@@ -72,7 +76,7 @@ const Profile = () => {
                     <div><span className='text-white text-sm'>Today's Progress</span></div>
                     <div><span className='text-white text-sm'>0/30min</span></div>
                 </div>
-                <div><span></span></div>
+                <div className="card bg-white p-2 mt-5 rounded-lg"><span></span></div>
             </div>
         </div>
 
@@ -84,7 +88,7 @@ const Profile = () => {
                 </div>
                 <div><img src={ReadHubImages.ForwardArrow} alt="" className='filter invert-75'/></div>
             </div>
-            <div className="card bg-white flex flex-row justify-between w-full items-center p-5">
+            <div className="card bg-white flex flex-row justify-between w-full items-center p-5" onClick={()=> navigate("/profile/statistics")}>
                 <div className='flex flex-row gap-2 items-center justify-start'>
                     <span><img src={ReadHubImages.statisticsIcon} alt=""/></span>
                     <span className='text-black'>Statistics</span>
@@ -96,9 +100,12 @@ const Profile = () => {
                     <span><img src={ReadHubImages.cloudIcon} alt="" /></span>
                     <span className='text-black'>Backup & Sync</span>
                 </div>
-                <div><img src={ReadHubImages.ForwardArrow} alt="" className='filter invert-75'/></div>
+                <div className='flex flex-row gap-4 items-center'>
+                    <span className='bg-blue-100 text-sm py-0.5 px-3 rounded-xl text-blue-800'>Premium</span>
+                    <img src={ReadHubImages.ForwardArrow} alt="" className='filter invert-75'/>
+                </div>
             </div>
-            <div className="card bg-white flex rounded-b-xl flex-row justify-between w-full items-center p-5">
+            <div className="card bg-white flex rounded-b-xl flex-row justify-between w-full items-center p-5" onClick={()=> navigate("/profile/settings")}>
                 <div className='flex flex-row gap-2 items-center justify-start'>
                     <span><img src={ReadHubImages.settingsIcon} alt=""/></span>
                     <span className='text-black'>Settings</span>
