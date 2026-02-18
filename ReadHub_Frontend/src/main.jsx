@@ -7,14 +7,17 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FileProvider } from "./Context/FileContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <GoogleOAuthProvider clientId="GOOGLE_CLIENT_ID.apps.googleusercontent.com">
-      <ToastContainer />
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </GoogleOAuthProvider>
-  </StrictMode>
+    <FileProvider>
+      <GoogleOAuthProvider clientId="GOOGLE_CLIENT_ID.apps.googleusercontent.com">
+        <ToastContainer />
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </GoogleOAuthProvider>
+    </FileProvider>
+  </StrictMode>,
 );

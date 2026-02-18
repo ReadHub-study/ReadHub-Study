@@ -1,20 +1,26 @@
 import React, { useState } from "react";
 import ContCard from "../Components/ContCard";
 import { Document, Page, pdfjs } from "react-pdf";
+import ViewPdf from "../Features/ViewPdf";
+import { useNavigate } from "react-router-dom";
+
+import { useFiles } from "../Context/FileContext";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 const Library = () => {
-  const [files, setFiles] = useState([]);
+  const { selectFile, selectedFile2, addFile, files, getProgress } = useFiles();
+  const navigate = useNavigate();
 
   const [textContent, setTextContent] = useState("");
   const [pdfContent, setPdfContent] = useState(null);
+  const [bookProgress, setBookProgress] = useState("");
 
   const [fileType, setFileType] = useState(null);
   const [fileName, setFileName] = useState("");
 
-  const [numPages, setNumPages] = useState(null);
-  const [pageNumber, setPageNumber] = useState(1);
+  const [numPages, setNumPages] = useState("");
+  const [pageNumber, setPageNumber] = useState(0);
   const [showPdf, setShowPdf] = useState(false);
 
   const handleFileSElect = (event) => {
@@ -28,7 +34,6 @@ const Library = () => {
       selectedFile.name.endsWith(".pdf")
     ) {
       handlePdf(selectedFile);
-      console.log(fileName);
     } else if (
       selectedFile.type.startsWith("text/") ||
       selectedFile.name.endsWith(".txt") ||
@@ -40,15 +45,33 @@ const Library = () => {
     }
   };
 
-  const handlePdf = (file) => {
+  const handlePdf = async (file) => {
     setFileType("pdf");
-    setPdfContent(file);
 
-    setFiles((prevFiles) => [...prevFiles, file]);
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjs.getDocument(arrayBuffer).promise;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const fileData = {
+          id: Date.now().toString(),
+          name: file.name,
+          type: "pdf",
+          file: e.target.result,
+          numPages: pdf.numPages,
+          currentPage: 0,
+          uploadedAt: new Date().toISOString(),
+        };
+
+        addFile(fileData);
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error("Error reading file:", error);
+      alert("Failed to read pdf file");
+    }
   };
-  console.log(pdfContent);
-  console.log(fileType);
-  console.log(files);
 
   const handleTextFile = (file) => {
     setFileType("text");
@@ -63,12 +86,9 @@ const Library = () => {
     reader.readAsText(file);
   };
 
-  const goToPreviousPage = () => {
-    setPageNumber((prev) => Math.max(1, prev - 1));
-  };
-
-  const goToNextPage = () => {
-    setPageNumber((prev) => Math.min(numPages, prev + 1));
+  const openPdf = (file) => {
+    selectFile(file);
+    navigate(`/viewpdf/${file.id}`);
   };
 
   return (
@@ -98,7 +118,6 @@ const Library = () => {
             id="fileselect"
             onChange={handleFileSElect}
             className="hidden"
-            multiple
           />
           <img src="/Variant3c.svg" alt="icon" className="w-[24px]" />
           <p>Upload file</p>
@@ -133,8 +152,14 @@ const Library = () => {
           <ContCard
             key={file.id}
             fileName={file.name}
-            page={pageNumber}
-            totalPage={numPages}
+            page={file.currentPage || 0}
+            totalPage={file.numPages || 0}
+            progress={getProgress(file)}
+            onOpen={() => openPdf(file)}
+            progPercent={getProgress(file) + "%"}
+            continueRead={
+              file.currentPage < 1 ? "Start Reading" : "Continue Reading"
+            }
           />
         ))}
       </div>
