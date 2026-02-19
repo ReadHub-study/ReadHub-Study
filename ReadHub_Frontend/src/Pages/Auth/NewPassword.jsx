@@ -35,12 +35,6 @@ const NewPassword = () => {
         return;
     }
 
-    if(password !== confirmPassword){
-        setError("Passwords do not match");
-        setLoading(false);
-        return;
-    }
-
     // Get the code from sessionStorage
     const code = sessionStorage.getItem('resetCode');
     const email = sessionStorage.getItem('resetEmail');
