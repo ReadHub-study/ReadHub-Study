@@ -44,6 +44,13 @@ import starHighlightIcon from "../assets/starHighlight.png"
 import bookAchievementIcon from "../assets/bookAchievement.png"
 import streakTrophyIcon from "../assets/streakTrophy.png"
 import diamondIcon from "../assets/diamond.png"
+import sparkleIcon from "../assets/sparkle.png"
+import timerIcon from "../assets/timer.png"
+import libraryIcon from "../assets/library.png"
+import trendingbook1 from "../assets/trendingbook1.png"
+import trendingbook2 from "../assets/trendingbook2.png"
+import trendingbook3 from "../assets/trendingbook3.png"
+import playButtonIcon from "../assets/playButton.png"
 
 
 export const ReadHubImages = {
@@ -93,4 +100,11 @@ export const ReadHubImages = {
     bookAchievementIcon,
     streakTrophyIcon,
     diamondIcon,
+    sparkleIcon,
+    timerIcon,
+    libraryIcon,
+    trendingbook1,
+    trendingbook2,
+    trendingbook3,
+    playButtonIcon,
 }
