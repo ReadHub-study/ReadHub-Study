@@ -6,6 +6,11 @@ const Profile = () => {
 
     const navigate = useNavigate();
 
+    const handleLogout = () => {
+        localStorage.clear();
+        navigate("/login");
+    }
+
   return (
     <>
     <div className='p-5 bg-gray-100 min-h-screen'>
@@ -114,7 +119,9 @@ const Profile = () => {
             </div>
         </div>
 
-        <div className="card mt-10 justify-center items-center mb-40 border border-gray-300 rounded-lg p-3 flex flex-row gap-3">
+        <div className="card mt-10 justify-center items-center mb-40 border border-gray-300 rounded-lg p-3 flex flex-row gap-3"
+        onClick={handleLogout}
+        >
             <span><img src={ReadHubImages.signoutIcon} alt="" /></span>
             <span className='text-red-500'>Sign Out</span>
         </div>
