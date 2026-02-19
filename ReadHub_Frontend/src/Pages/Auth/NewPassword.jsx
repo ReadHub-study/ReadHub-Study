@@ -43,31 +43,36 @@ const NewPassword = () => {
 
     // Get the code from sessionStorage
     const code = sessionStorage.getItem('resetCode');
-    
-    if(!code){
-        setError("Session expired. Please request a new OTP.");
-        setLoading(false);
-        return;
+    const email = sessionStorage.getItem('resetEmail');
+
+    if (!code || !email) {
+      setError("Session expired. Please request a new OTP.");
+      setLoading(false);
+      return;
     }
 
     try {
       // Call reset-password API
       await axiosConfig.patch(apiEndpoints.RESET_PASSWORD, {
+        email: email,
         code: code,
-        password: password
+        password: password,
       });
-      
+
       setLoading(false);
       toast.success("Password reset successfully!");
-      
+
       // Clear the sessionStorage
       sessionStorage.removeItem('resetCode');
-      
+      sessionStorage.removeItem('resetEmail');
+
       // Navigate to login page
       navigate("/login");
     } catch (err) {
       setLoading(false);
-      const message = err.response?.data?.message || "Failed to reset password. Please try again.";
+      const message =
+        err.response?.data?.message ||
+        "Failed to reset password. Please try again.";
       setError(message);
       toast.error(message);
     }
