@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ReadHubImages } from '../../assets/asset';
 import { useNavigate } from 'react-router-dom';
 import ProfilePhotoSelector from '../../Components/ProfilePhotoSelector';
-import api from '../../Util/axiosConfig';
 import { apiEndpoints } from '../../Util/apiEndpoints';
+import axiosConfig from '../../Util/axiosConfig';
 
 const Profile = () => {
     const [image, setImage] = useState(null);
@@ -14,7 +14,7 @@ const Profile = () => {
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
-                const { data } = await api.get(apiEndpoints.USER_PROFILE);
+                const { data } = await axiosConfig.get(apiEndpoints.USER_PROFILE);
                 setUser(data.user);
                 setImage(data.user.profilePicture);
             } catch (error) {
@@ -37,7 +37,7 @@ const Profile = () => {
 
         try {
             // getting signature from backend
-            const { data: signatureData } = await api.get(apiEndpoints.CLOUDINARY_SIGNATURE);
+            const { data: signatureData } = await axiosConfig.get(apiEndpoints.CLOUDINARY_SIGNATURE);
 
             // uploading image to cloudinary
             const formData = new FormData();
@@ -53,7 +53,7 @@ const Profile = () => {
             const newProfilePicture = cloudinaryData.secure_url;
 
             // 3. Update user profile
-            const { data: updatedUserData } = await api.patch(apiEndpoints.UPDATE_PROFILE, {
+            const { data: updatedUserData } = await axiosConfig.patch(apiEndpoints.UPDATE_PROFILE, {
                 profilePicture: newProfilePicture,
             });
 
