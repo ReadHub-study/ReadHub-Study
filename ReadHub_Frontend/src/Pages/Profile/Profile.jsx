@@ -1,133 +1,276 @@
-import React from 'react'
-import { ReadHubImages } from '../../assets/asset'
-import { useNavigate } from 'react-router-dom'
+import React, { useState, useEffect, useRef } from 'react';
+import { ReadHubImages } from '../../assets/asset';
+import { useNavigate } from 'react-router-dom';
+import ProfilePhotoSelector from '../../Components/ProfilePhotoSelector';
+import api from '../../Util/axiosConfig';
 
 const Profile = () => {
-
+    const [image, setImage] = useState(null);
+    const [user, setUser] = useState(null);
+    const fileInputRef = useRef(null);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            try {
+                const { data } = await api.get('/user/');
+                setUser(data.user);
+                setImage(data.user.profilePicture);
+            } catch (error) {
+                console.error('Error fetching user profile:', error);
+            }
+        };
+        fetchUserProfile();
+    }, []);
 
     const handleLogout = () => {
         localStorage.clear();
-        navigate("/login");
-    }
+        navigate('/login');
+    };
 
-  return (
-    <>
-    <div className='p-5 bg-gray-100 min-h-screen'>
-        <div className="pageTitle"><h1 className='text-2xl font-semibold text-left mt-10'>Profile</h1></div>
-        <div className="card mt-5 flex items-start justify-start flex-col gap-5 p-5 bg-white rounded-lg">
-            <div className="userDetails flex gap-9 items-center w-full flex-row">
-                <div className="image relative">
-                    <span className='userimage'><img src={ReadHubImages.ProfileImage} alt="" /></span>
-                    <span className='editIcon absolute bottom-0 right-0 p-2 bg-blue-500 rounded-full items-center justify-center'><img src={ReadHubImages.EditIcon} alt="" /></span>
-                </div>
-                <div className="userInfo flex items-start justify-start flex-col">
-                    <span className='username text-lg font-medium'>Olawale</span>
-                    <span className='useremail underline text-sm text-gray-800'>johndoe@gmail.com</span>
-                </div>
-            </div>
-            <div className="upgrade bg-blue-500 text-white flex items-center justify-center w-full gap-3 rounded-lg p-3 text-center">
-                <span><img src={ReadHubImages.crown} alt="" /></span>
-                <span>Upgrade to Premium</span>
-            </div>
-        </div>
+    const handleImageUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        const axios = require('axios');
 
-        <div className="card mt-10 flex bg-white rounded-lg justify-between flex-row gap-5 text-center items-center px-7 py-3">
-            <div className='flex flex-row justify-center items-center gap-5'>
-                <div><img src={ReadHubImages.lightIcon} alt="" className='w-6 h-6'/></div>
-                <div className='flex items-start justify-start gap-0.5 text-lg flex-col'>
-                    <span className='text-md font-medium'>Dark Mode</span>
-                    <span className='text-sm text-gray-700'>Switch to dark theme</span>
-                </div>
-            </div>
-            <div className='toggleButton'><img src={ReadHubImages.switchIcon} alt="" /></div>
-        </div>
+        try {
+            // getting signature from backend
+            const { data: signatureData } = await api.get('/cloudinary/image');
 
+            // uploading image to cloudinary
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('api_key', signatureData.apiKey);
+            formData.append('timestamp', signatureData.timestamp);
+            formData.append('signature', signatureData.signature);
+            formData.append('folder', signatureData.folder);
 
-        <div className="cards grid grid-cols-2 gap-4 mt-10">
-            <div className='flex flex-col gap-3 bg-white p-5 rounded-lg'>
-                <span><img src={ReadHubImages.bookIcon} alt="" className='w-6 h-6' /></span>
-                <span className='font-semibold text-xl'>0</span>
-                <span className='font-light'>Books Read</span>
-            </div>
-            <div className='flex flex-col gap-3 bg-white p-5 rounded-lg'>
-                <span><img src={ReadHubImages.timeIcon} alt=""  className='w-6 h-6'/></span>
-                <span className='font-semibold text-xl'>0h</span>
-                <span className='font-light'>Total Hours</span>
-            </div>
-            <div className='flex flex-col gap-3 bg-white p-5 rounded-lg'>
-                <span><img src={ReadHubImages.fireIcon} alt="" className='w-6 h-8' /></span>
-                <span className='font-semibold text-xl'>0</span>
-                <span className='font-light'>Day Streak</span>
-            </div>
-            <div className='flex flex-col gap-3 bg-white p-5 rounded-lg'>
-                <span><img src={ReadHubImages.highlightIcon} alt="" className='w-8 h-8' /></span>
-                <span className='font-semibold text-xl'>0</span>
-                <span className='font-light'>Highlights</span>
-            </div>
-        </div>
+            const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${signatureData.cloudName}/image/upload`;
+            const { data: cloudinaryData } = await axios.post(cloudinaryUrl, formData);
 
+            const newProfilePicture = cloudinaryData.secure_url;
 
-        <div className="card mt-10 bg-blue-500 flex flex-col gap-5 p-5 rounded-2xl justify-start items-start">
-            <div className='flex flex-row justify-between w-full items-center'>
-                <div className='flex flex-row items-center justify-center gap-2'>
-                    <span><img src={ReadHubImages.circlesIcon} alt="" /></span>
-                    <span className='text-white text-lg'>Daily Reading Goal</span>
-                </div>
-                <div><span><img src={ReadHubImages.ForwardArrow} alt="" /></span></div>
-            </div>
-            <div className='flex flex-col gap-1'>
-                <div className='flex flex-row justify-between items-center gap-46'>
-                    <div><span className='text-white text-sm'>Today's Progress</span></div>
-                    <div><span className='text-white text-sm'>0/30min</span></div>
-                </div>
-                <div className="card bg-white p-2 mt-5 rounded-lg"><span></span></div>
-            </div>
-        </div>
+            // 3. Update user profile
+            const { data: updatedUserData } = await api.put('/user/profile', {
+                profilePicture: newProfilePicture,
+            });
 
-        <div className="cards mt-10 flex flex-col gap-0.5 justify-center items-center">
-            <div className="card bg-white flex rounded-t-xl flex-row justify-between w-full items-center p-5">
-                <div className='flex flex-row gap-2 items-center justify-start'>
-                    <span><img src={ReadHubImages.circlesIcon} alt="" className='filter invert-50'/></span>
-                    <span className='text-black'>Reading Goals</span>
-                </div>
-                <div><img src={ReadHubImages.ForwardArrow} alt="" className='filter invert-75'/></div>
-            </div>
-            <div className="card bg-white flex flex-row justify-between w-full items-center p-5" onClick={()=> navigate("/profile/statistics")}>
-                <div className='flex flex-row gap-2 items-center justify-start'>
-                    <span><img src={ReadHubImages.statisticsIcon} alt=""/></span>
-                    <span className='text-black'>Statistics</span>
-                </div>
-                <div><img src={ReadHubImages.ForwardArrow} alt="" className='filter invert-75'/></div>
-            </div>
-            <div className="card bg-white flex flex-row justify-between w-full items-center p-5">
-                <div className='flex flex-row gap-2 items-center justify-start'>
-                    <span><img src={ReadHubImages.cloudIcon} alt="" /></span>
-                    <span className='text-black'>Backup & Sync</span>
-                </div>
-                <div className='flex flex-row gap-4 items-center'>
-                    <span className='bg-blue-100 text-sm py-0.5 px-3 rounded-xl text-blue-800'>Premium</span>
-                    <img src={ReadHubImages.ForwardArrow} alt="" className='filter invert-75'/>
-                </div>
-            </div>
-            <div className="card bg-white flex rounded-b-xl flex-row justify-between w-full items-center p-5" onClick={()=> navigate("/profile/settings")}>
-                <div className='flex flex-row gap-2 items-center justify-start'>
-                    <span><img src={ReadHubImages.settingsIcon} alt=""/></span>
-                    <span className='text-black'>Settings</span>
-                </div>
-                <div><img src={ReadHubImages.ForwardArrow} alt="" className='filter invert-75'/></div>
-            </div>
-        </div>
+            setUser(updatedUserData.updatedUser);
+            setImage(newProfilePicture);
+        } catch (error) {
+            console.error('Error uploading image:', error);
+        }
+    };
 
-        <div className="card mt-10 justify-center items-center mb-40 border border-gray-300 rounded-lg p-3 flex flex-row gap-3"
-        onClick={handleLogout}
-        >
-            <span><img src={ReadHubImages.signoutIcon} alt="" /></span>
-            <span className='text-red-500'>Sign Out</span>
-        </div>
-    </div>
-    </>
-  )
-}
+    const handleEditIconClick = () => {
+        fileInputRef.current.click();
+    };
 
-export default Profile
+    return (
+        <>
+            <div className="p-5 bg-gray-100 min-h-screen">
+                <div className="pageTitle">
+                    <h1 className="text-2xl font-semibold text-left mt-10">Profile</h1>
+                </div>
+                <div className="card mt-5 flex items-start justify-start flex-col gap-5 p-5 bg-white rounded-lg">
+                    <div className="userDetails flex gap-9 items-center w-full flex-row">
+                        <div className="image relative">
+                            <span className="userimage w-20 h-20">
+                                <ProfilePhotoSelector image={image} />
+                            </span>
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={handleImageUpload}
+                                style={{ display: 'none' }}
+                                accept="image/*"
+                            />
+                            <span
+                                className="editIcon absolute bottom-0 right-0 p-2 bg-blue-500 rounded-full items-center justify-center cursor-pointer"
+                                onClick={handleEditIconClick}
+                            >
+                                <img src={ReadHubImages.EditIcon} alt="" />
+                            </span>
+                        </div>
+                        <div className="userInfo flex items-start justify-start flex-col">
+                            <span className="username text-lg font-medium">
+                                {user ? user.username : 'username'}
+                            </span>
+                            <span className="useremail underline text-sm text-gray-800">
+                                {user ? user.email : 'user@gmail.com'}
+                            </span>
+                        </div>
+                    </div>
+                    <div className="upgrade bg-blue-500 text-white flex items-center justify-center w-full gap-3 rounded-lg p-3 text-center">
+                        <span>
+                            <img src={ReadHubImages.crown} alt="" />
+                        </span>
+                        <span>Upgrade to Premium</span>
+                    </div>
+                </div>
+
+                <div className="card mt-10 flex bg-white rounded-lg justify-between flex-row gap-5 text-center items-center px-7 py-3">
+                    <div className="flex flex-row justify-center items-center gap-5">
+                        <div>
+                            <img src={ReadHubImages.lightIcon} alt="" className="w-6 h-6" />
+                        </div>
+                        <div className="flex items-start justify-start gap-0.5 text-lg flex-col">
+                            <span className="text-md font-medium">Dark Mode</span>
+                            <span className="text-sm text-gray-700">
+                                Switch to dark theme
+                            </span>
+                        </div>
+                    </div>
+                    <div className="toggleButton">
+                        <img src={ReadHubImages.switchIcon} alt="" />
+                    </div>
+                </div>
+
+                <div className="cards grid grid-cols-2 gap-4 mt-10">
+                    <div className="flex flex-col gap-3 bg-white p-5 rounded-lg">
+                        <span>
+                            <img src={ReadHubImages.bookIcon} alt="" className="w-6 h-6" />
+                        </span>
+                        <span className="font-semibold text-xl">0</span>
+                        <span className="font-light">Books Read</span>
+                    </div>
+                    <div className="flex flex-col gap-3 bg-white p-5 rounded-lg">
+                        <span>
+                            <img src={ReadHubImages.timeIcon} alt="" className="w-6 h-6" />
+                        </span>
+                        <span className="font-semibold text-xl">0h</span>
+                        <span className="font-light">Total Hours</span>
+                    </div>
+                    <div className="flex flex-col gap-3 bg-white p-5 rounded-lg">
+                        <span>
+                            <img src={ReadHubImages.fireIcon} alt="" className="w-6 h-8" />
+                        </span>
+                        <span className="font-semibold text-xl">0</span>
+                        <span className="font-light">Day Streak</span>
+                    </div>
+                    <div className="flex flex-col gap-3 bg-white p-5 rounded-lg">
+                        <span>
+                            <img src={ReadHubImages.highlightIcon} alt="" className="w-8 h-8" />
+                        </span>
+                        <span className="font-semibold text-xl">0</span>
+                        <span className="font-light">Highlights</span>
+                    </div>
+                </div>
+
+                <div className="card mt-10 bg-blue-500 flex flex-col gap-5 p-5 rounded-2xl justify-start items-start">
+                    <div className="flex flex-row justify-between w-full items-center">
+                        <div className="flex flex-row items-center justify-center gap-2">
+                            <span>
+                                <img src={ReadHubImages.circlesIcon} alt="" />
+                            </span>
+                            <span className="text-white text-lg">Daily Reading Goal</span>
+                        </div>
+                        <div>
+                            <span>
+                                <img src={ReadHubImages.ForwardArrow} alt="" />
+                            </span>
+                        </div>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <div className="flex flex-row justify-between items-center gap-46">
+                            <div>
+                                <span className="text-white text-sm">Today's Progress</span>
+                            </div>
+                            <div>
+                                <span className="text-white text-sm">0/30min</span>
+                            </div>
+                        </div>
+                        <div className="card bg-white p-2 mt-5 rounded-lg">
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="cards mt-10 flex flex-col gap-0.5 justify-center items-center">
+                    <div className="card bg-white flex rounded-t-xl flex-row justify-between w-full items-center p-5">
+                        <div className="flex flex-row gap-2 items-center justify-start">
+                            <span>
+                                <img src={ReadHubImages.circlesIcon} alt="" className="filter invert-50" />
+                            </span>
+                            <span className="text-black">Reading Goals</span>
+                        </div>
+                        <div>
+                            <img
+                                src={ReadHubImages.ForwardArrow}
+                                alt=""
+                                className="filter invert-75"
+                            />
+                        </div>
+                    </div>
+                    <div
+                        className="card bg-white flex flex-row justify-between w-full items-center p-5"
+                        onClick={() => navigate('/profile/statistics')}
+                    >
+                        <div className="flex flex-row gap-2 items-center justify-start">
+                            <span>
+                                <img src={ReadHubImages.statisticsIcon} alt="" />
+                            </span>
+                            <span className="text-black">Statistics</span>
+                        </div>
+                        <div>
+                            <img
+                                src={ReadHubImages.ForwardArrow}
+                                alt=""
+                                className="filter invert-75"
+                            />
+                        </div>
+                    </div>
+                    <div className="card bg-white flex flex-row justify-between w-full items-center p-5">
+                        <div className="flex flex-row gap-2 items-center justify-start">
+                            <span>
+                                <img src={ReadHubImages.cloudIcon} alt="" />
+                            </span>
+                            <span className="text-black">Backup & Sync</span>
+                        </div>
+                        <div className="flex flex-row gap-4 items-center">
+                            <span className="bg-blue-100 text-sm py-0.5 px-3 rounded-xl text-blue-800">
+                                Premium
+                            </span>
+                            <img
+                                src={ReadHubImages.ForwardArrow}
+                                alt=""
+                                className="filter invert-75"
+                            />
+                        </div>
+                    </div>
+                    <div
+                        className="card bg-white flex rounded-b-xl flex-row justify-between w-full items-center p-5"
+                        onClick={() => navigate('/profile/settings')}
+                    >
+                        <div className="flex flex-row gap-2 items-center justify-start">
+                            <span>
+                                <img src={ReadHubImages.settingsIcon} alt="" />
+                            </span>
+                            <span className="text-black">Settings</span>
+                        </div>
+                        <div>
+                            <img
+                                src={ReadHubImages.ForwardArrow}
+                                alt=""
+                                className="filter invert-75"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    className="card mt-10 justify-center items-center mb-40 border border-gray-300 rounded-lg p-3 flex flex-row gap-3"
+                    onClick={handleLogout}
+                >
+                    <span>
+                        <img src={ReadHubImages.signoutIcon} alt="" />
+                    </span>
+                    <span className="text-red-500">Sign Out</span>
+                </div>
+            </div>
+        </>
+    );
+};
+
+export default Profile;
