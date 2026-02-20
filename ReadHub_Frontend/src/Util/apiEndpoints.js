@@ -1,5 +1,5 @@
 export const baseURL = "https://readhub-study.onrender.com/api/";
-const CLOUDINARY_NAME = "";
+export const CLOUDINARY_NAME = import.meta.env.VITE_CLOUDINARY_NAME;
 
 export const apiEndpoints = {
     LOGIN: "auth/login",

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ReadHubImages } from '../../assets/asset';
 import { useNavigate } from 'react-router-dom';
 import ProfilePhotoSelector from '../../Components/ProfilePhotoSelector';
-import { apiEndpoints } from '../../Util/apiEndpoints';
+import { apiEndpoints, CLOUDINARY_NAME } from '../../Util/apiEndpoints';
 import axiosConfig from '../../Util/axiosConfig';
 
 const Profile = () => {
@@ -47,7 +47,7 @@ const Profile = () => {
             formData.append('signature', signatureData.signature);
             formData.append('folder', signatureData.folder);
 
-            const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${signatureData.cloudName}/image/upload`;
+            const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_NAME}/image/upload`;
             const { data: cloudinaryData } = await axios.post(cloudinaryUrl, formData);
 
             const newProfilePicture = cloudinaryData.secure_url;
