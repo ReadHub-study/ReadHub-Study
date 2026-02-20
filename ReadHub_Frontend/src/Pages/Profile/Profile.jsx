@@ -34,7 +34,7 @@ const Profile = () => {
         const file = e.target.files[0];
         if (!file) return;
         
-        const axios = require('axios');
+        const { default: axios } = await import('axios');
 
         try {
             // getting signature from backend
