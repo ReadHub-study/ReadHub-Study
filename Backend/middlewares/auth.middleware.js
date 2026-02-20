@@ -1,3 +1,5 @@
+import jwt from 'jsonwebtoken'
+
 export const authenticate = (req, res, next) => {
   const authHeader = req.headers.authorization
 
@@ -15,6 +17,8 @@ export const authenticate = (req, res, next) => {
     if (err.name === 'TokenExpiredError') {
       return res.status(401).json({ error: 'Access token expired' })
     }
-    return res.status(401).json({ error: 'Invalid access token' })
+    return res
+      .status(401)
+      .json({ error: 'Invalid access token', details: err.message })
   }
 }

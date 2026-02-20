@@ -5,8 +5,9 @@ import morgan from 'morgan'
 import bodyParser from 'body-parser'
 import connectDB from './config/db.js'
 import authRoutes from './routes/auth.routes.js'
-import cookieParser from 'cookie-parser'
-// import userRoutes from './routes/userRoutes.js'
+// import cookieParser from 'cookie-parser'
+import userProfile from './routes/userProfile.route.js'
+import cloudinaryRoutes from './routes/cloudinary-uploads.route.js'
 // import bookRoutes from './routes/bookRoutes.js'
 // import reviewRoutes from './routes/reviewRoutes.js'
 
@@ -21,8 +22,8 @@ app.use(
   cors({
     origin: allowedOrigin,
     credentials: true,
-  })
-);
+  }),
+)
 app.use(bodyParser.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
@@ -35,7 +36,8 @@ app.get('/', (req, res) => {
 
 // Routes
 app.use('/api/auth', authRoutes)
-// app.use('/api/users', userRoutes)
+app.use('/api/profile', userProfile)
+app.use('/api/cloudinary-signature', cloudinaryRoutes)
 // app.use('/api/books', bookRoutes)
 // app.use('/api/reviews', reviewRoutes)
 
