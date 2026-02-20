@@ -3,6 +3,8 @@ import { ReadHubImages } from '../../assets/asset';
 import { useNavigate } from 'react-router-dom';
 import ProfilePhotoSelector from '../../Components/ProfilePhotoSelector';
 import api from '../../Util/axiosConfig';
+import axiosConfig from '../../Util/axiosConfig';
+import { apiEndpoints } from '../../Util/apiEndpoints';
 
 const Profile = () => {
     const [image, setImage] = useState(null);
@@ -13,7 +15,7 @@ const Profile = () => {
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
-                const { data } = await api.get('/user/');
+                const { data } = await axiosConfig.get(apiEndpoints.USER_PROFILE);
                 setUser(data.user);
                 setImage(data.user.profilePicture);
             } catch (error) {
