@@ -54,7 +54,7 @@ const Profile = () => {
             const newProfilePicture = cloudinaryData.secure_url;
 
             // 3. Update user profile
-            const { data: updatedUserData } = await api.put('/user/profile', {
+            const { data: updatedUserData } = await axiosConfig.patch(apiEndpoints.USER_PROFILE, JSON.stringify({}), {
                 profilePicture: newProfilePicture,
             });
 
